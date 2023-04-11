@@ -1,17 +1,23 @@
+#ifndef HUFFMAN_ALGORITHM_PRIORITY_QUEUE_H
+#define HUFFMAN_ALGORITHM_PRIORITY_QUEUE_H
 #pragma once
 
-#define MAX_SYM 256
+#define MAX_SYM 257
+#define SIZE 257
 
 typedef struct node {
-    char symbol;
-    char isSym; // 0 if symbol, -1 if not
-    int frequency;
+    unsigned char symbol;
+    unsigned char isSym;
+    int frequency;    
+    int level;
+    char code[SIZE];
     struct node* left;
     struct node* right;
 }node;
 
 typedef struct priority_queue {
-    node* mas[MAX_SYM]; // frequency field of first element is count of elements 
+    int len;
+    node* mas[MAX_SYM]; // frequency field of first element is count of elements
 }priority_queue;
 
 priority_queue* create_pri_queue();
@@ -27,3 +33,4 @@ node* Extract_min(priority_queue* pri_queue);
 node* cpy_node(node* old_node);
 
 void free_queue(priority_queue* pri_queue);
+#endif //HUFFMAN_ALGORITHM_PRIORITY_QUEUE_H

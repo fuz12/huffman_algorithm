@@ -1,17 +1,20 @@
 #include <stdlib.h>
 #include "priority_queue.h"
 
-priority_queue* create_pri_queue() {
+priority_queue* create_pri_queue() { // создаём приоритетную очередь
     priority_queue* pri_queue = (priority_queue*)malloc(sizeof(priority_queue));
     node* tmp = create_node();
+    pri_queue->len = 0;
     pri_queue->mas[0] = tmp;
     return pri_queue;
 }
 
-node* create_node() {
+node* create_node() { // создаём узел
     node* new_node = (node*)malloc(sizeof(node));
     new_node->frequency = 0;
     new_node->isSym = 0;
+    new_node->symbol = 0;
+    new_node->code[0] = '\0';
     new_node->right = NULL;
     new_node->left = NULL;
     return new_node;
@@ -25,6 +28,7 @@ void swap(node** a, node** b) {
 
 void insert(priority_queue* pri_queue, node* new_node) {
     pri_queue->mas[0]->frequency += 1;
+    pri_queue->len++;
     int size = pri_queue->mas[0]->frequency;
     pri_queue->mas[size] = new_node;
     for (int i = size; i / 2 > 0; i /= 2) {
@@ -41,6 +45,7 @@ node* Extract_min(priority_queue* pri_queue) {
     pri_queue->mas[size]->frequency = 0;
     --pri_queue->mas[0]->frequency;
     --size;
+    --pri_queue->len;
     int i = 1;
     while (i < size) {
         int r = i * 2;
@@ -69,11 +74,6 @@ node* Extract_min(priority_queue* pri_queue) {
 
 node* cpy_node(node* old_node) {
     node* new_node = (node*)malloc(sizeof(node));
-    /*new_node->frequency = old_node->frequency;
-    new_node->isSym = old_node->isSym;
-    new_node->left = old_node->left;
-    new_node->right = old_node->right;
-    new_node->symbol = new_node->symbol;*/
     *new_node = *old_node;
     return new_node;
 }
