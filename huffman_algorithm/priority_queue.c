@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "priority_queue.h"
 
 priority_queue* create_pri_queue() { // создаём приоритетную очередь
@@ -7,23 +6,6 @@ priority_queue* create_pri_queue() { // создаём приоритетную 
     pri_queue->len = 0;
     pri_queue->mas[0] = tmp;
     return pri_queue;
-}
-
-node* create_node() { // создаём узел
-    node* new_node = (node*)malloc(sizeof(node));
-    new_node->frequency = 0;
-    new_node->isSym = 0;
-    new_node->symbol = 0;
-    new_node->code[0] = '\0';
-    new_node->right = NULL;
-    new_node->left = NULL;
-    return new_node;
-}
-
-void swap(node** a, node** b) {
-    node* temp = *b;
-    *b = *a;
-    *a = temp;
 }
 
 void insert(priority_queue* pri_queue, node* new_node) {
@@ -70,12 +52,6 @@ node* Extract_min(priority_queue* pri_queue) {
         swap(&pri_queue->mas[i], &pri_queue->mas[i / 2]);
     }
     return mine;
-}
-
-node* cpy_node(node* old_node) {
-    node* new_node = (node*)malloc(sizeof(node));
-    *new_node = *old_node;
-    return new_node;
 }
 
 void free_queue(priority_queue* pri_queue) {

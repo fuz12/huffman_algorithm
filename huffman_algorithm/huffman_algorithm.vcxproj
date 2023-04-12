@@ -127,11 +127,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="huffmanTree.c" />
     <ClCompile Include="main.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
     </ClCompile>
+    <ClCompile Include="nodes.c" />
     <ClCompile Include="priority_queue.c" />
     <ClCompile Include="priority_queue.h" />
+    <ClCompile Include="test.c" />
+    <ClCompile Include="write_read_Huffman.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="defines.h" />
+    <ClInclude Include="huffmanTree.h" />
+    <ClInclude Include="nodes.h" />
+    <ClInclude Include="write_read_Huffman.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

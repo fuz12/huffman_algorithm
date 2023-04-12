@@ -1,16 +1,13 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <wchar.h>
 #include <locale.h>
 #include <Windows.h>
 #include "priority_queue.h"
-#define BIT8 8
-#define LEN 1000000000
+#include "defines.h"
+#include "nodes.h"
+#include "huffmanTree.h"
+#include "write_read_Huffman.h"
 
 typedef struct alphabet{
     char code[SIZE]; // новый бинарный код байта
@@ -25,20 +22,6 @@ Alphabet abc[SIZE];
 char string[LEN];
 //тут есть проблема, так как файл может быть большого размера, то такого способа хранения хватит не на много, !ВАЖНО!
 //поэтому нужно придумать как записывать строку в бинарный файл !ВАЖНО!
-
-typedef union bit2char{
-    unsigned char symb;
-    struct bit{
-        unsigned b1 : 1;
-        unsigned b2 : 1;
-        unsigned b3 : 1;
-        unsigned b4 : 1;
-        unsigned b5 : 1;
-        unsigned b6 : 1;
-        unsigned b7 : 1;
-        unsigned b8 : 1;
-    } mbit;
-} BIT2CHAR;
 
 node* huffmanTree(priority_queue* q, int len) {
 
@@ -65,9 +48,9 @@ node* huffmanTree(priority_queue* q, int len) {
 }
 
 //функция, в которой строим новый код для каждого символа из полученного алфавита *если сложно, начни ещё раз с прочтения*
-void trip(node* tree){
+void trip(node* tree) {
 
-    if(tree == NULL){
+    if (tree == NULL) {
         return;
     }
 
@@ -75,31 +58,45 @@ void trip(node* tree){
     insert(q, tree);
 
     //пока очередь не пустая, то извлекаем из очереди узел, левому в код записываем 0, а правому 1 *загляни в структуру я поменял немного её*
-    while(q->len > 0){
+    while (q->len > 0) {
         node* temp = Extract_min(q);
 
-        if(temp -> left != NULL){
+        if (temp->left != NULL) {
             insert(q, temp->left);
             strcat(temp->left->code, temp->code);
             strcat(temp->left->code, "0");
         }
 
-        if(temp -> right != NULL){
+        if (temp->right != NULL) {
             insert(q, temp->right);
             strcat(temp->right->code, temp->code);
             strcat(temp->right->code, "1");
         }
 
         //если isSym равен 1, то есть isSym - байт, 0 - просто узел в дереве
-        if(temp -> isSym == 1){
+        if (temp->isSym == 1) {
             unsigned char sym = temp->symbol;
-            strcpy(abc[sym].code,temp->code);
+            strcpy(abc[sym].code, temp->code);
             abc[sym].sym = sym;
             printf("%c %s\n", abc[sym].sym, abc[sym].code);
             size++;
         }
     }
 }
+
+typedef union bit2char{
+    unsigned char symb;
+    struct bit{
+        unsigned b1 : 1;
+        unsigned b2 : 1;
+        unsigned b3 : 1;
+        unsigned b4 : 1;
+        unsigned b5 : 1;
+        unsigned b6 : 1;
+        unsigned b7 : 1;
+        unsigned b8 : 1;
+    } mbit;
+} BIT2CHAR;
 
 void create_new_binstring(FILE *name, char* binstring){
     unsigned char c; // переменная для записи прочитанного байта
@@ -123,14 +120,12 @@ int main(void) {
 
     int len = 0; // кол-во использованных букв в файле (алфавит) 
 
-    long long int countSym = 0;
-
     int freq[SIZE] = {0}; // частотный словарь
 
     //открываем входной и выходной файлы
-    FILE *file = fopen("tests/inputbmp.bmp", "rb");
-    FILE *file_output = fopen("tests/outputbmp.bmp", "wb");
-    FILE* file_decoded = fopen("tests/decodedbmp.bmp", "wb");
+    FILE *file = fopen("tests/inputtxt.txt", "rb");
+    FILE *file_output = fopen("tests/outputtxt.txt", "wb");
+    FILE* file_decoded = fopen("tests/decodedtxt.txt", "wb");
 
 
     //обрабатываем ошибку не существующего файла
@@ -144,7 +139,6 @@ int main(void) {
     //читаем файл и создаём частотный словарь
     while(fread(&ch, sizeof(unsigned char), 1, file)){
         freq[ch]++;
-        countSym++;
     }
     fseek(file, 0, SEEK_SET); // после прочтения файл переводим указатель в начало файла
 
@@ -158,21 +152,23 @@ int main(void) {
             insert(Q, temp);
             len++;
         }
-    }
-
-    char* binstring = (char*)malloc(countSym * sizeof(char));
+    }    
 
     node* tree = huffmanTree(Q, len); // создали дерево
     node* tree_for_trip = cpy_node(tree);
     trip(tree_for_trip); //нашли коды для записи каждого байта и сохранили в abc
+    int countSym = tree->frequency;
+    char* binstring = (char*)malloc(countSym * sizeof(char));
     create_new_binstring(file, binstring); // создаём строчку с новым бинарным кодом текущего файла
-
+    
     long count = strlen(string) / BIT8; // целое кол-во байт в новой строке с бинарным кодом
 
     if (file_output == NULL) {
         printf("Error output");
         exit(EXIT_FAILURE);
     }
+    fwrite(&countSym, sizeof(int), 1, file_output);
+    write(tree, file_output);
     BIT2CHAR symb;
     for(int i = 0; i < count + 1; i++){
         symb.mbit.b1 = string[i*BIT8 + 7];
@@ -187,15 +183,18 @@ int main(void) {
     }
     fseek(file_output, 0, SEEK_SET);      
 
-    FILE* file_kkk = fopen("tests/outputbmp.bmp", "rb");
+    FILE* file_outputRead = fopen("tests/outputtxt.txt", "rb");
     if (file_decoded == NULL) {
         printf("Error decoded");
         exit(EXIT_FAILURE);
     }
+    fread(&countSym, sizeof(int), 1, file_outputRead); // ОБЯЗАТЕЛЬНО ПЕРЕД read() ЧИТАЕМ КОЛ-ВО СИМВОЛОВ ДО КОДИРОВКИ
+ 
+    clean_node* tree_for_decoding = read(file_outputRead); // read() читает из закодированного файла дерево и возвращает корень, ПЕРЕД ЭТОЙ ФУНКЦИЕЙ ОБЯЗАТЕЛЬНО ПРОЧИТАТЬ countSym(количество символов без кодировки)
     char byte[8];   
-    node* root = tree;   
+    clean_node* root = tree_for_decoding;   
     printf("\n");
-    while (fread(&symb.symb, sizeof(unsigned char), 1, file_kkk)) {
+    while (fread(&symb.symb, sizeof(unsigned char), 1, file_outputRead)) {
         byte[0] = symb.mbit.b1;
         byte[1] = symb.mbit.b2;
         byte[2] = symb.mbit.b3;
@@ -205,16 +204,16 @@ int main(void) {
         byte[6] = symb.mbit.b7;
         byte[7] = symb.mbit.b8;
         for (int i = BIT8 - 1; i >= 0 && countSym != 0; i--) {       
-            if (tree->isSym == 1) {
-                putc(tree->symbol, file_decoded);
-                tree = root;
+            if (tree_for_decoding->isSym == 1) {
+                putc(tree_for_decoding->symbol, file_decoded);
+                tree_for_decoding = root;
                 countSym--;
             }
             if (byte[i] == 0) {                
-                tree = tree->left;
+                tree_for_decoding = tree_for_decoding->left;
             }
             else {
-                tree = tree->right;
+                tree_for_decoding = tree_for_decoding->right;
             }     
         }
     }
