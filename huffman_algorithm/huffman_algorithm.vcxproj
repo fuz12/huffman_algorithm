@@ -134,14 +134,13 @@
     <ClCompile Include="nodes.c" />
     <ClCompile Include="priority_queue.c" />
     <ClCompile Include="priority_queue.h" />
-    <ClCompile Include="test.c" />
-    <ClCompile Include="write_read_Huffman.c" />
+    <ClCompile Include="write_read_file.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
     <ClInclude Include="huffmanTree.h" />
     <ClInclude Include="nodes.h" />
-    <ClInclude Include="write_read_Huffman.h" />
+    <ClInclude Include="write_read_file.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

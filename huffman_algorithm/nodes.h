@@ -21,8 +21,8 @@ typedef struct clean_node {
 
 node* create_node();
 
-node* cpy_node(node* old_node);
+node* cpy_node(node* old_node); 
 
 void swap(node** a, node** b);
 
-clean_node* create_clean_node();
+clean_node* create_clean_node(); // Создание ноды для записи в файл(экономия памяти)

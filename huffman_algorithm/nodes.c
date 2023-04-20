@@ -1,6 +1,6 @@
 #include "nodes.h"
 
-node* create_node() { // создаём узел
+node* create_node() {
     node* new_node = (node*)malloc(sizeof(node));
     new_node->frequency = 0;
     new_node->isSym = 0;
@@ -23,7 +23,7 @@ node* cpy_node(node* old_node) {
     return new_node;
 }
 
-clean_node* create_clean_node() { // создаём узел
+clean_node* create_clean_node() {
     clean_node* new_node = (clean_node*)malloc(sizeof(clean_node));
     new_node->isSym = 0;
     new_node->symbol = 0;

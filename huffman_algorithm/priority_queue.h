@@ -5,7 +5,7 @@
 
 typedef struct priority_queue {
     int len;
-    node* mas[MAX_SYM]; // frequency field of first element is count of elements
+    node* mas[SIZE];
 }priority_queue;
 
 priority_queue* create_pri_queue();

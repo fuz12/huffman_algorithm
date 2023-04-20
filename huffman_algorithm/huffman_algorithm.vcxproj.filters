@@ -24,16 +24,13 @@
     <ClCompile Include="priority_queue.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="test.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="nodes.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="write_read_Huffman.c">
+    <ClCompile Include="huffmanTree.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="huffmanTree.c">
+    <ClCompile Include="write_read_file.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,10 +41,10 @@
     <ClInclude Include="defines.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="write_read_Huffman.h">
+    <ClInclude Include="huffmanTree.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="huffmanTree.h">
+    <ClInclude Include="write_read_file.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
